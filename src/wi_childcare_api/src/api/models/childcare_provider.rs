@@ -1,48 +1,29 @@
-use serde::Deserialize;
-use super::application_type::ApplicationType;
+use serde::{Deserialize, Serialize};
 
-#[derive(Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct ChildcareProvider {
-    #[serde(alias = "UNIQUE_ID")]
+    #[serde(rename(deserialize = "UNIQUE_ID"))]
     id: i32,
-    #[serde(alias = "FACILITY_NAME")]
+    #[serde(rename(deserialize = "FACILITY_NAME"))]
     facility_name: String,
-    #[serde(alias = "ADDRESS")]
+    #[serde(rename(deserialize = "ADDRESS"))]
     address: String,
-    #[serde(alias = "ADDRESS_2")]
+    #[serde(rename(deserialize = "ADDRESS_2"))]
     address_two: String,
-    #[serde(alias = "CITY")]
+    #[serde(rename(deserialize = "CITY"))]
     city: String,
-    #[serde(alias = "STATE")]
+    #[serde(rename(deserialize = "STATE"))]
     state: String,
-    #[serde(alias = "COUNTY")]
+    #[serde(rename(deserialize = "COUNTY"))]
     county: String,
-    #[serde(alias = "LAT")]
+    #[serde(rename(deserialize = "LAT"))]
     lat: f64,
-    #[serde(alias = "LON")]
+    #[serde(rename(deserialize = "LON"))]
     long: f64,
-    #[serde(alias = "CONTACT_PHONE")]
+    #[serde(rename(deserialize = "CONTACT_PHONE"))]
     provider_phone: String,
-    #[serde(alias = "APPLICATION_TYPE")]
+    #[serde(rename(deserialize = "APPLICATION_TYPE"))]
     application_type: String,
-    #[serde(alias = "CAPACITY")]
-    capacity: i8,
-}
-
-impl ChildcareProvider {
-    // pub fn from_json(data: HashMap<String, String>) {
-    //     ChildcareProvider {
-    //         id: data.get("UNIQUE_ID").unwrap().parse().unwrap(),
-    //         facility_name: data.get("FACILITY_NAME").unwrap().to_string(),
-    //         address: "".to_string(),
-    //         address_two: "".to_string(),
-    //         city: "".to_string(),
-    //         state: "".to_string(),
-    //         county: "".to_string(),
-    //         lat: 0.0,
-    //         long: 0.0,
-    //         provider_phone: "".to_string(),
-    //         application_type: ApplicationType::LicensedGroup,
-    //     }
-    // }
+    #[serde(rename(deserialize = "CAPACITY"))]
+    capacity: i16,
 }
