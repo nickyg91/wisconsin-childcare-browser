@@ -1,11 +1,15 @@
 <script setup lang="ts">
 import type { IChildcareProvider } from '@/models/childcare-provider.interface';
 import ProviderItem from './ProviderItem.vue';
+import { LoaderCircle } from 'lucide-vue-next';
 
-defineProps<{ providers: IChildcareProvider[] }>();
+defineProps<{ providers: IChildcareProvider[]; isLoading: boolean }>();
 </script>
 <template>
   <div class="p-1">
+    <div v-if="isLoading" class="flex mt-96 justify-center">
+      <LoaderCircle :size="64" class="animate-spin text-gray-800" />
+    </div>
     <div v-if="providers.length > 0">
       <ProviderItem
         class="hover:cursor-pointer hover:bg-gray-100"
@@ -14,7 +18,9 @@ defineProps<{ providers: IChildcareProvider[] }>();
         :provider="provider"
       />
     </div>
-    <div v-else class="mt-96">No providers found. Please type in a county to begin</div>
+    <div v-if="providers.length === 0 && !isLoading" class="mt-96">
+      No providers found. Please type in a county to begin
+    </div>
   </div>
 </template>
 

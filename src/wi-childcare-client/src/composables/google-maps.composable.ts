@@ -1,9 +1,10 @@
 import { Loader, type LoaderOptions } from '@googlemaps/js-api-loader';
 import { HomeIcon } from 'lucide-vue-next';
-import { h, render } from 'vue';
+import { h, ref, render } from 'vue';
 
 export const useGoogleMaps = () => {
   let map: google.maps.Map | null = null;
+  const homeLocation = ref<google.maps.LatLng | null>(null);
   const markers: google.maps.marker.AdvancedMarkerElement[] = [];
   const createMap = async (
     mapId: string,
@@ -22,6 +23,10 @@ export const useGoogleMaps = () => {
       center: pos,
       mapId: mapId
     });
+    homeLocation.value = new google.maps.LatLng(
+      position.coords.latitude,
+      position.coords.longitude
+    );
     addMarker('Your Location', position.coords.latitude, position.coords.longitude, true);
   };
 
@@ -56,7 +61,12 @@ export const useGoogleMaps = () => {
       return;
     }
     markers.map((marker) => {
-      marker.map = null;
+      if (
+        marker.position?.lat !== homeLocation.value?.lat() &&
+        marker.position?.lng !== homeLocation.value?.lng()
+      ) {
+        marker.map = null;
+      }
     });
   };
 
@@ -71,6 +81,7 @@ export const useGoogleMaps = () => {
     createMap,
     addMarker,
     resetMarkers,
-    setLocation
+    setLocation,
+    homeLocation
   };
 };

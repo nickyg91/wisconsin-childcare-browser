@@ -9,16 +9,19 @@ import { ref } from 'vue';
 const childcareSearchService = useChildcareSearchService();
 const providers = ref<IChildcareProvider[]>([]);
 const county = ref<string>('');
+const isLoading = ref<boolean>(false);
 watchDebounced(
   county,
   async (newValue) => {
     if (newValue.length > 2) {
+      isLoading.value = true;
       const response = await childcareSearchService.getChildcareProvidersByCounty(newValue);
       providers.value = response;
     }
     if (newValue.length === 0) {
       providers.value = [];
     }
+    isLoading.value = false;
   },
   {
     debounce: 500
@@ -33,7 +36,11 @@ watchDebounced(
     </div>
 
     <div class="flex">
-      <ProvidersList class="max-h-lvh w-1/4 overflow-y-scroll" :providers="providers" />
+      <ProvidersList
+        class="max-h-lvh w-1/4 overflow-y-scroll"
+        :is-loading="isLoading"
+        :providers="providers"
+      />
       <ProviderMap class="w-3/4 min-h-lvh" :providers="providers" />
     </div>
   </main>
