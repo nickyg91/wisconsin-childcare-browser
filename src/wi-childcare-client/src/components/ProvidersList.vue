@@ -4,6 +4,9 @@ import ProviderItem from './ProviderItem.vue';
 import { LoaderCircle } from 'lucide-vue-next';
 
 defineProps<{ providers: IChildcareProvider[]; isLoading: boolean }>();
+defineEmits<{
+  (e: 'provider-selected', provider: IChildcareProvider): void;
+}>();
 </script>
 <template>
   <div class="p-1">
@@ -16,9 +19,10 @@ defineProps<{ providers: IChildcareProvider[]; isLoading: boolean }>();
         v-for="provider in providers"
         :key="provider.id"
         :provider="provider"
+        @click="() => $emit('provider-selected', provider)"
       />
     </div>
-    <div v-if="providers.length === 0 && !isLoading" class="mt-96">
+    <div v-if="providers.length === 0 && !isLoading" class="flex mt-96 justify-center">
       No providers found. Please type in a county to begin
     </div>
   </div>

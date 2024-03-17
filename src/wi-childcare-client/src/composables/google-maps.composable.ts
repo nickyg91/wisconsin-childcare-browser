@@ -74,7 +74,13 @@ export const useGoogleMaps = () => {
     if (map == null) {
       return;
     }
-    map.setCenter(new google.maps.LatLng(lat, long));
+    map.panTo(new google.maps.LatLng(lat, long));
+  };
+  const setZoom = (zoom: number) => {
+    if (map == null) {
+      return;
+    }
+    map.setZoom(zoom);
   };
 
   return {
@@ -82,6 +88,6 @@ export const useGoogleMaps = () => {
     addMarker,
     resetMarkers,
     setLocation,
-    homeLocation
+    setZoom
   };
 };

@@ -10,11 +10,13 @@ const childcareSearchService = useChildcareSearchService();
 const providers = ref<IChildcareProvider[]>([]);
 const county = ref<string>('');
 const isLoading = ref<boolean>(false);
+const selectedProvider = ref<IChildcareProvider | null>(null);
 watchDebounced(
   county,
   async (newValue) => {
     if (newValue.length > 2) {
       isLoading.value = true;
+      providers.value = [];
       const response = await childcareSearchService.getChildcareProvidersByCounty(newValue);
       providers.value = response;
     }
@@ -40,8 +42,13 @@ watchDebounced(
         class="max-h-lvh w-1/4 overflow-y-scroll"
         :is-loading="isLoading"
         :providers="providers"
+        @provider-selected="selectedProvider = $event"
       />
-      <ProviderMap class="w-3/4 min-h-lvh" :providers="providers" />
+      <ProviderMap
+        class="w-3/4 min-h-lvh"
+        :providers="providers"
+        :focused-provider="selectedProvider"
+      />
     </div>
   </main>
 </template>

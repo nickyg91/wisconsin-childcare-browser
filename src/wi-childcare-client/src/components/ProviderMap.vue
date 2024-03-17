@@ -5,7 +5,10 @@ import type { IChildcareProvider } from '@/models/childcare-provider.interface';
 import { type LoaderOptions } from '@googlemaps/js-api-loader';
 import { onMounted, watch } from 'vue';
 const map = useGoogleMaps();
-const props = defineProps<{ providers: IChildcareProvider[] }>();
+const props = defineProps<{
+  providers: IChildcareProvider[];
+  focusedProvider: IChildcareProvider | null;
+}>();
 watch(
   () => props.providers,
   (newValue) => {
@@ -21,6 +24,16 @@ watch(
     immediate: true
   }
 );
+watch(
+  () => props.focusedProvider,
+  (newValue) => {
+    if (newValue) {
+      map.setLocation(newValue.lat, newValue.long);
+      map.setZoom(16);
+    }
+  }
+);
+
 onMounted(async () => {
   const key = import.meta.env.VITE_GMAPS_API_KEY as string;
   const loaderOptions = {
