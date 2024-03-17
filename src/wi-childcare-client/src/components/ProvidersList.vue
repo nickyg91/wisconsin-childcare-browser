@@ -6,7 +6,15 @@ defineProps<{ providers: IChildcareProvider[] }>();
 </script>
 <template>
   <div class="p-1">
-    <ProviderItem v-for="provider in providers" :key="provider.id" :provider="provider" />
+    <div v-if="providers.length > 0">
+      <ProviderItem
+        class="hover:cursor-pointer hover:bg-gray-100"
+        v-for="provider in providers"
+        :key="provider.id"
+        :provider="provider"
+      />
+    </div>
+    <div v-else class="mt-96">No providers found. Please type in a county to begin</div>
   </div>
 </template>
 

@@ -1,10 +1,38 @@
 <script setup lang="ts">
-import type { onMounted } from 'vue';
-const map = new google.maps.Map(document.querySelector('.map'), {
-  center: { lat: -34.397, lng: 150.644 },
-  zoom: 8
+/// <reference types="@types/google.maps" />
+import { useGoogleMaps } from '@/composables/google-maps.composable';
+import type { IChildcareProvider } from '@/models/childcare-provider.interface';
+import { type LoaderOptions } from '@googlemaps/js-api-loader';
+import { onMounted, watch } from 'vue';
+const map = useGoogleMaps();
+const props = defineProps<{ providers: IChildcareProvider[] }>();
+watch(
+  () => props.providers,
+  (newValue) => {
+    if (newValue.length > 0) {
+      map.resetMarkers();
+      newValue.forEach((provider) => {
+        map.addMarker(provider.facility_name, provider.lat, provider.long);
+      });
+      map.setLocation(newValue[0].lat, newValue[0].long);
+    }
+  },
+  {
+    immediate: true
+  }
+);
+onMounted(async () => {
+  const key = import.meta.env.VITE_GMAPS_API_KEY as string;
+  const loaderOptions = {
+    apiKey: key,
+    version: 'weekly',
+    libraries: ['places', 'maps', 'marker', 'streetView']
+  } as LoaderOptions;
+
+  navigator.geolocation.getCurrentPosition(async (position) => {
+    await map.createMap('childcare-provider-map', '.map', loaderOptions, position);
+  });
 });
-onMounted(() => {});
 </script>
 <template>
   <div class="map"></div>

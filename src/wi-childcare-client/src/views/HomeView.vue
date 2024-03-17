@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import ProviderMap from '@/components/ProviderMap.vue';
 import ProvidersList from '@/components/ProvidersList.vue';
 import Input from '@/components/ui/input/Input.vue';
 import { useChildcareSearchService } from '@/composables/api/childcare-search-service.composable';
@@ -28,15 +29,12 @@ watchDebounced(
 <template>
   <main>
     <div class="p-2">
-      <Input
-        v-model="county"
-        class="bg-slate-600 text-white placeholder-white"
-        placeholder="Enter a county"
-      />
+      <Input v-model="county" placeholder="Enter a county" />
     </div>
 
     <div class="flex">
-      <ProvidersList class="max-h-lvh overflow-y-scroll" :providers="providers" />
+      <ProvidersList class="max-h-lvh w-1/4 overflow-y-scroll" :providers="providers" />
+      <ProviderMap class="w-3/4 min-h-lvh" :providers="providers" />
     </div>
   </main>
 </template>
