@@ -39,13 +39,13 @@ watchDebounced(
 
     <div class="flex">
       <ProvidersList
-        class="max-h-lvh w-1/4 overflow-y-scroll"
+        class="max-h-lvh w-1/5 overflow-y-scroll"
         :is-loading="isLoading"
         :providers="providers"
         @provider-selected="selectedProvider = $event"
       />
       <ProviderMap
-        class="w-3/4 min-h-lvh"
+        class="w-4/5 min-h-lvh"
         :providers="providers"
         :focused-provider="selectedProvider"
       />
