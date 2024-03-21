@@ -5,7 +5,8 @@ import { h, ref, render } from 'vue';
 export const useGoogleMaps = () => {
   let map: google.maps.Map | null = null;
   const homeLocation = ref<google.maps.LatLng | null>(null);
-  const markers: google.maps.marker.AdvancedMarkerElement[] = [];
+  const markers = new Map<string, google.maps.marker.AdvancedMarkerElement>();
+  let placesService: google.maps.places.PlacesService | null = null;
   const createMap = async (
     mapId: string,
     selector: string,
@@ -28,6 +29,7 @@ export const useGoogleMaps = () => {
       position.coords.longitude
     );
     addMarker('Your Location', position.coords.latitude, position.coords.longitude, true);
+    placesService = new google.maps.places.PlacesService(map);
   };
 
   const addMarker = (name: string, lat: number, long: number, isHomeMarker = false) => {
@@ -43,7 +45,8 @@ export const useGoogleMaps = () => {
         map: map,
         position: new google.maps.LatLng(lat, long),
         title: name,
-        content: el
+        content: el,
+        gmpClickable: true
       });
     } else {
       marker = new google.maps.marker.AdvancedMarkerElement({
@@ -53,14 +56,14 @@ export const useGoogleMaps = () => {
       });
     }
 
-    markers.push(marker);
+    markers.set(name, marker);
   };
 
   const resetMarkers = () => {
     if (map == null) {
       return;
     }
-    markers.map((marker) => {
+    markers.forEach((marker) => {
       if (
         marker.position?.lat !== homeLocation.value?.lat() &&
         marker.position?.lng !== homeLocation.value?.lng()
@@ -76,6 +79,7 @@ export const useGoogleMaps = () => {
     }
     map.panTo(new google.maps.LatLng(lat, long));
   };
+
   const setZoom = (zoom: number) => {
     if (map == null) {
       return;
@@ -83,11 +87,64 @@ export const useGoogleMaps = () => {
     map.setZoom(zoom);
   };
 
+  const getPlaceDetailsByAddress = async (
+    address: string
+  ): Promise<google.maps.places.PlaceResult | null> => {
+    return new Promise((resolve, reject) => {
+      if (!placesService) {
+        return;
+      }
+      placesService.findPlaceFromQuery(
+        {
+          query: address,
+          fields: ['all']
+        },
+        (results, status) => {
+          if (status === 'OK') {
+            const foundPlace = results ? results[0] : null;
+            if (foundPlace) {
+              return placesService?.getDetails(
+                {
+                  placeId: foundPlace.place_id!,
+                  fields: [
+                    'website',
+                    'business_status',
+                    'rating',
+                    'user_ratings_total',
+                    'types',
+                    'price_level'
+                  ]
+                },
+                (place, status) => {
+                  if (status === 'OK') {
+                    resolve(place);
+                  }
+                }
+              );
+            }
+          } else {
+            reject(status);
+          }
+        }
+      );
+    });
+  };
+
+  const getMarkerByName = (name: string): google.maps.marker.AdvancedMarkerElement | null => {
+    const marker = markers.get(name);
+    if (!marker || name === 'Your Location') {
+      return null;
+    }
+    return marker;
+  };
+
   return {
     createMap,
     addMarker,
     resetMarkers,
     setLocation,
-    setZoom
+    setZoom,
+    getPlaceDetailsByAddress,
+    getMarkerByName
   };
 };

@@ -36,7 +36,6 @@ watchDebounced(
     <div class="p-2">
       <Input v-model="county" placeholder="Enter a county" />
     </div>
-
     <div class="flex">
       <ProvidersList
         class="max-h-lvh w-1/5 overflow-y-scroll"

@@ -4,11 +4,16 @@ import { useGoogleMaps } from '@/composables/google-maps.composable';
 import type { IChildcareProvider } from '@/models/childcare-provider.interface';
 import { type LoaderOptions } from '@googlemaps/js-api-loader';
 import { onMounted, watch } from 'vue';
+import { useDialogService } from '@/composables/dialog-service.composable';
+import PlaceSummary from './PlaceSummary.vue';
+
+const dialogService = useDialogService();
 const map = useGoogleMaps();
 const props = defineProps<{
   providers: IChildcareProvider[];
   focusedProvider: IChildcareProvider | null;
 }>();
+
 watch(
   () => props.providers,
   (newValue) => {
@@ -26,10 +31,25 @@ watch(
 );
 watch(
   () => props.focusedProvider,
-  (newValue) => {
+  async (newValue) => {
     if (newValue) {
       map.setLocation(newValue.lat, newValue.long);
       map.setZoom(16);
+      const place = await map.getPlaceDetailsByAddress(newValue.address);
+      const marker = map.getMarkerByName(newValue.facility_name);
+      if (marker) {
+        marker.addEventListener('gmp-click', () => {
+          dialogService.showDialog('providerDetails', PlaceSummary, {
+            title: newValue.facility_name,
+            description: place?.formatted_address,
+            props: {
+              provider: newValue,
+              place: place
+            },
+            footer: null
+          });
+        });
+      }
     }
   }
 );
@@ -38,7 +58,7 @@ onMounted(async () => {
   const key = import.meta.env.VITE_GMAPS_API_KEY as string;
   const loaderOptions = {
     apiKey: key,
-    version: 'weekly',
+    version: 'beta',
     libraries: ['places', 'maps', 'marker', 'streetView']
   } as LoaderOptions;
 
