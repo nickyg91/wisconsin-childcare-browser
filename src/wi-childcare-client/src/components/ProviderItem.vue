@@ -1,12 +1,17 @@
 <script setup lang="ts">
 import type { IChildcareProvider } from '@/models/childcare-provider.interface';
+import { computed } from 'vue';
 
-defineProps<{ provider: IChildcareProvider }>();
+const props = defineProps<{ provider: IChildcareProvider }>();
+const address = computed(() => {
+  return `${props.provider.address}, ${props.provider.city}, ${props.provider.state}`;
+});
 </script>
 <template>
   <div class="p-2 border-solid border-b border-b-white">
     <div>Name: {{ provider.facility_name }}</div>
-    <div>Address: {{ provider.address }}, {{ provider.city }}, {{ provider.state }}</div>
+    <div>Address: {{ address }}</div>
+    <div>Contact Name: {{ provider.contact_name }}</div>
     <div>Phone: {{ provider.provider_phone }}</div>
     <div>
       {{ provider.application_type }}

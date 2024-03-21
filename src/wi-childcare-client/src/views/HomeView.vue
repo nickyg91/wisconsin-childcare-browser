@@ -33,9 +33,6 @@ watchDebounced(
 
 <template>
   <main>
-    <div class="p-2">
-      <Input v-model="county" placeholder="Enter a county" />
-    </div>
     <div class="flex">
       <ProvidersList
         class="max-h-lvh w-1/5 overflow-y-scroll"
@@ -43,11 +40,20 @@ watchDebounced(
         :providers="providers"
         @provider-selected="selectedProvider = $event"
       />
-      <ProviderMap
-        class="w-4/5 min-h-lvh"
-        :providers="providers"
-        :focused-provider="selectedProvider"
-      />
+      <div class="flex flex-col w-4/5 min-h-lvh">
+        <div class="p-2">
+          <Input v-model="county" placeholder="Enter a county" />
+        </div>
+        <div>
+          <ProviderMap
+            class="min-h-lvh"
+            :providers="providers"
+            :focused-provider="selectedProvider"
+          />
+        </div>
+      </div>
     </div>
+
+    <div class="flex"></div>
   </main>
 </template>

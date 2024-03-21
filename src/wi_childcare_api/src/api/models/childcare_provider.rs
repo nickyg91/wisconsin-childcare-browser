@@ -26,4 +26,6 @@ pub struct ChildcareProvider {
     application_type: String,
     #[serde(rename(deserialize = "CAPACITY"))]
     capacity: i16,
+    #[serde(rename(deserialize = "CONTACT_NAME"))]
+    contact_name: String,
 }

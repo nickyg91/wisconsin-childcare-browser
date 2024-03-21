@@ -1,12 +1,15 @@
 import { Loader, type LoaderOptions } from '@googlemaps/js-api-loader';
 import { HomeIcon } from 'lucide-vue-next';
 import { h, ref, render } from 'vue';
+import { useMarkerEventBus } from './marker-event-bus.composable';
 
 export const useGoogleMaps = () => {
+  const eventEmitter = useMarkerEventBus();
   let map: google.maps.Map | null = null;
   const homeLocation = ref<google.maps.LatLng | null>(null);
   const markers = new Map<string, google.maps.marker.AdvancedMarkerElement>();
   let placesService: google.maps.places.PlacesService | null = null;
+
   const createMap = async (
     mapId: string,
     selector: string,
@@ -44,7 +47,6 @@ export const useGoogleMaps = () => {
       marker = new google.maps.marker.AdvancedMarkerElement({
         map: map,
         position: new google.maps.LatLng(lat, long),
-        title: name,
         content: el,
         gmpClickable: true
       });
@@ -52,7 +54,11 @@ export const useGoogleMaps = () => {
       marker = new google.maps.marker.AdvancedMarkerElement({
         map: map,
         position: new google.maps.LatLng(lat, long),
-        title: name
+        title: name,
+        gmpClickable: true
+      });
+      google.maps.event.addListener(marker, 'gmp-click', () => {
+        eventEmitter.emit('marker-clicked', name);
       });
     }
 

@@ -6,7 +6,9 @@ import { type LoaderOptions } from '@googlemaps/js-api-loader';
 import { onMounted, watch } from 'vue';
 import { useDialogService } from '@/composables/dialog-service.composable';
 import PlaceSummary from './PlaceSummary.vue';
+import { useMarkerEventBus } from '@/composables/marker-event-bus.composable';
 
+const eventEmitter = useMarkerEventBus();
 const dialogService = useDialogService();
 const map = useGoogleMaps();
 const props = defineProps<{
@@ -38,7 +40,7 @@ watch(
       const place = await map.getPlaceDetailsByAddress(newValue.address);
       const marker = map.getMarkerByName(newValue.facility_name);
       if (marker) {
-        marker.addEventListener('gmp-click', () => {
+        google.maps.event.addListener(marker, 'gmp-click', () => {
           dialogService.showDialog('providerDetails', PlaceSummary, {
             title: newValue.facility_name,
             description: place?.formatted_address,
@@ -64,6 +66,22 @@ onMounted(async () => {
 
   navigator.geolocation.getCurrentPosition(async (position) => {
     await map.createMap('childcare-provider-map', '.map', loaderOptions, position);
+  });
+
+  eventEmitter.on('marker-clicked', async (name: string) => {
+    const provider = props.providers.find((p) => p.facility_name === name);
+    if (provider) {
+      const place = await map.getPlaceDetailsByAddress(provider.address);
+      dialogService.showDialog('providerDetails', PlaceSummary, {
+        title: provider.facility_name,
+        description: provider.address,
+        props: {
+          provider: provider,
+          place: place
+        },
+        footer: null
+      });
+    }
   });
 });
 </script>

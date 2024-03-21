@@ -11,4 +11,5 @@ export interface IChildcareProvider {
   provider_phone: string;
   application_type: string;
   capacity: number;
+  contact_name: string;
 }
