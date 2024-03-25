@@ -7,7 +7,7 @@ import Input from '@/components/ui/input/Input.vue';
 
 const props = defineProps<{ providers: IChildcareProvider[]; isLoading: boolean }>();
 const emits = defineEmits<{
-  (e: 'provider-selected', provider: IChildcareProvider): void;
+  (e: 'providerSelected', provider: IChildcareProvider): void;
 }>();
 
 const selectedProvider = ref<IChildcareProvider | null>(null);
@@ -24,7 +24,7 @@ const filteredProviders = computed(() => {
 
 const onProviderSelected = (provider: IChildcareProvider) => {
   selectedProvider.value = provider;
-  emits('provider-selected', provider);
+  emits('providerSelected', provider);
 };
 
 const isSelected = (id: number) => {

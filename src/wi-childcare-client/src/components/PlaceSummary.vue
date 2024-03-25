@@ -1,10 +1,15 @@
 <script setup lang="ts">
 import type { IChildcareProvider } from '@/models/childcare-provider.interface';
 import { SquareArrowOutUpRightIcon } from 'lucide-vue-next';
+import { Button } from '@/components/ui/button';
 import { computed } from 'vue';
 const props = defineProps<{
   place: google.maps.places.PlaceResult;
   provider: IChildcareProvider;
+}>();
+
+defineEmits<{
+  (e: 'closeSummary'): void;
 }>();
 
 const isBusiness = computed(() => {
@@ -78,6 +83,9 @@ const rating = computed(() => {
           </div>
         </div>
       </div>
+    </div>
+    <div class="flex justify-end">
+      <Button @click="$emit('closeSummary')"> Test </Button>
     </div>
   </div>
 </template>

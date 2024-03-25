@@ -11,8 +11,30 @@ export const useDialogService = () => {
     if (openDialogs.value.has(name)) {
       return;
     }
-    //need event emitters yet.
-    const view = h(component, options.props);
+    const emitters = Object.keys(options.emits ?? {}).reduce(
+      (prev: Record<string, (...args: any[]) => void | Promise<void>>, curr) => {
+        if (!curr.startsWith('on')) {
+          const funcName = curr[0].toUpperCase() + curr.slice(1);
+          prev[`on${funcName}`] = options.emits![curr] as (...args: any[]) => void | Promise<void>;
+        } else {
+          prev[curr] = options.emits![curr] as (...args: any[]) => void | Promise<void>;
+        }
+        return prev;
+      },
+      {}
+    );
+
+    const view = h(component, {
+      ...options.props,
+      ...emitters
+    });
+
+    if (typeof options.title === 'string') {
+      options.title = h('div', options.title);
+    } else if (options.title === null || options.title === undefined) {
+      options.title = h('div', '');
+    }
+
     const dialog = defineComponent({
       setup() {
         return () =>
@@ -28,10 +50,10 @@ export const useDialogService = () => {
                 open: openDialogs.value.has(name)
               },
               {
-                title: () => h('div', options.title),
+                title: () => renderSlot(options.title),
                 content: () => h('div', view),
-                description: () => h('div', options.description ?? ''),
-                footer: () => (options.footer ? h(options.footer) : '')
+                description: () => renderSlot(options.description),
+                footer: () => renderSlot(options.footer)
               }
             )
           ]);
@@ -44,6 +66,15 @@ export const useDialogService = () => {
     if (openDialogs.value.has(name)) {
       openDialogs.value.delete(name);
     }
+  };
+
+  const renderSlot = (slot: string | Component | null | undefined) => {
+    if (typeof slot === 'string') {
+      return h('div', slot);
+    } else if (!slot) {
+      return h('div', '');
+    }
+    return h(slot);
   };
 
   return {
