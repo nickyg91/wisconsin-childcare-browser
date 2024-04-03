@@ -47,8 +47,7 @@ watch(
             props: {
               provider: newValue,
               place: place
-            },
-            footer: null
+            }
           });
         });
       }
@@ -79,7 +78,11 @@ onMounted(async () => {
           provider: provider,
           place: place
         },
-        footer: null
+        emits: {
+          closeSummary: () => {
+            dialogService.closeDialog('providerDetails');
+          }
+        }
       });
     }
   });
