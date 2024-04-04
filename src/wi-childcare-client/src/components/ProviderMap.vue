@@ -1,7 +1,7 @@
 <script setup lang="ts">
 /// <reference types="@types/google.maps" />
 import { useGoogleMaps } from '@/composables/google-maps.composable';
-import type { IChildcareProvider } from '@/models/childcare-provider.interface';
+import type { IDhsProviderData } from '@/models/dhs-provider-data.interface';
 import { type LoaderOptions } from '@googlemaps/js-api-loader';
 import { onMounted, watch } from 'vue';
 import { useDialogService } from '@/composables/dialog-service.composable';
@@ -12,8 +12,8 @@ const eventEmitter = useMarkerEventBus();
 const dialogService = useDialogService();
 const map = useGoogleMaps();
 const props = defineProps<{
-  providers: IChildcareProvider[];
-  focusedProvider: IChildcareProvider | null;
+  providers: IDhsProviderData[];
+  focusedProvider: IDhsProviderData | null;
 }>();
 
 watch(
@@ -93,3 +93,4 @@ onMounted(async () => {
 </template>
 
 <style scoped></style>
+@/models/dhs-provider-data.interface

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { IChildcareProvider } from '@/models/childcare-provider.interface';
+import type { IChildcareProvider } from '@/models/dhs-provider-data.interface';
 import { computed } from 'vue';
 
 const props = defineProps<{ provider: IChildcareProvider }>();
@@ -21,3 +21,4 @@ const address = computed(() => {
 </template>
 
 <style scoped></style>
+@/models/dhs-provider-data.interface

@@ -1,4 +1,4 @@
-export interface IChildcareProvider {
+export interface IDhsProviderData {
   id: number;
   facility_name: string;
   address: string;

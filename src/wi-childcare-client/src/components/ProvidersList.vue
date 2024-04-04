@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { IChildcareProvider } from '@/models/childcare-provider.interface';
+import type { IChildcareProvider } from '@/models/dhs-provider-data.interface';
 import ProviderItem from './ProviderItem.vue';
 import { LoaderCircle } from 'lucide-vue-next';
 import { computed, ref } from 'vue';
@@ -54,3 +54,4 @@ const isSelected = (id: number) => {
 </template>
 
 <style scoped></style>
+@/models/dhs-provider-data.interface

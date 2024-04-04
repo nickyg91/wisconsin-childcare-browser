@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import type { IChildcareProvider } from '@/models/childcare-provider.interface';
+import type { IDhsProviderData } from '@/models/dhs-provider-data.interface';
 import { SquareArrowOutUpRightIcon } from 'lucide-vue-next';
 import { Button } from '@/components/ui/button';
 import { computed } from 'vue';
 const props = defineProps<{
   place: google.maps.places.PlaceResult;
-  provider: IChildcareProvider;
+  provider: IDhsProviderData;
 }>();
 
 defineEmits<{
@@ -35,7 +35,7 @@ const rating = computed(() => {
         <label for="address" class="font-bold"> Address </label>
         <div>{{ provider.address }}</div>
       </div>
-      <div class="mt-2">
+      <div v-if="provider.contact_name" class="mt-2">
         <label for="address" class="font-bold"> Contact Name </label>
         <div>{{ provider.contact_name }}</div>
       </div>
@@ -44,11 +44,11 @@ const rating = computed(() => {
         <div>{{ provider.provider_phone }}</div>
       </div>
       <div class="mt-2">
-        <label for="phone" class="font-bold"> Capacity </label>
+        <label v-if="provider.capacity" for="capacity" class="font-bold"> Capacity </label>
         <div>{{ provider.capacity }}</div>
       </div>
-      <div class="mt-2">
-        <label for="capacity" class="font-bold"> Type </label>
+      <div v-if="provider.application_type" class="mt-2">
+        <label for="application_type" class="font-bold"> Type </label>
         <div>{{ provider.application_type }}</div>
       </div>
     </div>
@@ -91,3 +91,4 @@ const rating = computed(() => {
 </template>
 
 <style scoped></style>
+@/models/dhs-provider-data.interface

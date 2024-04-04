@@ -2,22 +2,22 @@
 import ProviderMap from '@/components/ProviderMap.vue';
 import ProvidersList from '@/components/ProvidersList.vue';
 import Input from '@/components/ui/input/Input.vue';
-import { useChildcareSearchService } from '@/composables/api/childcare-search-service.composable';
-import type { IChildcareProvider } from '@/models/childcare-provider.interface';
+import { useDshSearchService } from '@/composables/api/dhs-data-search-service.composable';
+import type { IDhsProviderData } from '@/models/dhs-provider-data.interface';
 import { watchDebounced } from '@vueuse/core';
 import { ref } from 'vue';
-const childcareSearchService = useChildcareSearchService();
-const providers = ref<IChildcareProvider[]>([]);
+const dhsSearchService = useDshSearchService();
+const providers = ref<IDhsProviderData[]>([]);
 const county = ref<string>('');
 const isLoading = ref<boolean>(false);
-const selectedProvider = ref<IChildcareProvider | null>(null);
+const selectedProvider = ref<IDhsProviderData | null>(null);
 watchDebounced(
   county,
   async (newValue) => {
     if (newValue.length > 2) {
       isLoading.value = true;
       providers.value = [];
-      const response = await childcareSearchService.getChildcareProvidersByCounty(newValue);
+      const response = await dhsSearchService.getChildcareProvidersByCounty(newValue);
       providers.value = response;
     }
     if (newValue.length === 0) {
