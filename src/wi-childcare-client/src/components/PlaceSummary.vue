@@ -85,7 +85,7 @@ const rating = computed(() => {
       </div>
     </div>
     <div class="flex justify-end">
-      <Button @click="$emit('closeSummary')"> Test </Button>
+      <Button class="btn-danger" @click="$emit('closeSummary')"> Close </Button>
     </div>
   </div>
 </template>
