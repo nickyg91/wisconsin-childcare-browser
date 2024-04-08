@@ -1,13 +1,42 @@
 
 mod api;
 #[macro_use] extern crate rocket;
+
+use std::path::{Path, PathBuf};
+use rocket::fs::{NamedFile, relative};
 use rocket::serde::json::Json;
 use crate::api::models::childcare_provider::{ChildcareProvider};
 use crate::api::models::vaccination_provider::VaccinationProvider;
 
+const DIST: &str = relative!("dist");
+
+#[get("/<file..>", rank = 0)]
+async fn static_files(file: PathBuf) -> Option<NamedFile> {
+    NamedFile::open(Path::new(DIST).join("assets/").join(file))
+        .await
+        .ok()
+}
+
+#[get("/<_..>", rank = 1)]
+async fn index() -> Option<NamedFile> {
+    NamedFile::open(Path::new(DIST).join("index.html"))
+        .await
+        .ok()
+}
+
+#[get("/<_path..>", rank = 2)]
+async fn fallback(_path: PathBuf) -> Option<NamedFile> {
+    NamedFile::open(Path::new(DIST).join("index.html"))
+        .await
+        .ok()
+}
+
 #[launch]
 fn rocket() -> _ {
-    rocket::build().mount("/api", routes![get_childcare_providers_by_county, get_childcare_providers_like_facility_name, get_child_vaccination_participants_by_county])
+    rocket::build()
+        .mount("/api", routes![get_childcare_providers_by_county, get_childcare_providers_like_facility_name, get_child_vaccination_participants_by_county])
+        .mount("/assets", routes![static_files])
+        .mount("/", routes![index, fallback])
 }
 #[get("/childcare/providers/county/<county>")]
 async fn get_childcare_providers_by_county(county: &str) -> Result<Json<Vec<ChildcareProvider>>, rocket::http::Status>

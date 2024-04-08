@@ -1,16 +1,16 @@
 <script setup lang="ts">
-import type { IChildcareProvider } from '@/models/dhs-provider-data.interface';
+import type { IDhsProviderData } from '@/models/dhs-provider-data.interface';
 import ProviderItem from './ProviderItem.vue';
 import { LoaderCircle } from 'lucide-vue-next';
 import { computed, ref } from 'vue';
 import Input from '@/components/ui/input/Input.vue';
 
-const props = defineProps<{ providers: IChildcareProvider[]; isLoading: boolean }>();
+const props = defineProps<{ providers: IDhsProviderData[]; isLoading: boolean }>();
 const emits = defineEmits<{
-  (e: 'providerSelected', provider: IChildcareProvider): void;
+  (e: 'providerSelected', provider: IDhsProviderData): void;
 }>();
 
-const selectedProvider = ref<IChildcareProvider | null>(null);
+const selectedProvider = ref<IDhsProviderData | null>(null);
 const filterCriteria = ref<string>('');
 
 const filteredProviders = computed(() => {
@@ -22,7 +22,7 @@ const filteredProviders = computed(() => {
   });
 });
 
-const onProviderSelected = (provider: IChildcareProvider) => {
+const onProviderSelected = (provider: IDhsProviderData) => {
   selectedProvider.value = provider;
   emits('providerSelected', provider);
 };

@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import type { IChildcareProvider } from '@/models/dhs-provider-data.interface';
+import type { IDhsProviderData } from '@/models/dhs-provider-data.interface';
 import { computed } from 'vue';
 
-const props = defineProps<{ provider: IChildcareProvider }>();
+const props = defineProps<{ provider: IDhsProviderData }>();
 const address = computed(() => {
   return `${props.provider.address}, ${props.provider.city}, ${props.provider.state}`;
 });
