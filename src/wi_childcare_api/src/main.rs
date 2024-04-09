@@ -8,7 +8,7 @@ use rocket::serde::json::Json;
 use crate::api::models::childcare_provider::{ChildcareProvider};
 use crate::api::models::vaccination_provider::VaccinationProvider;
 
-const DIST: &str = relative!("dist");
+const DIST: &str = "dist";
 
 #[get("/<file..>", rank = 0)]
 async fn static_files(file: PathBuf) -> Option<NamedFile> {
@@ -24,19 +24,13 @@ async fn index() -> Option<NamedFile> {
         .ok()
 }
 
-#[get("/<_path..>", rank = 2)]
-async fn fallback(_path: PathBuf) -> Option<NamedFile> {
-    NamedFile::open(Path::new(DIST).join("index.html"))
-        .await
-        .ok()
-}
-
 #[launch]
 fn rocket() -> _ {
+    println!(env!("CARGO_MANIFEST_DIR"));
     rocket::build()
         .mount("/api", routes![get_childcare_providers_by_county, get_childcare_providers_like_facility_name, get_child_vaccination_participants_by_county])
         .mount("/assets", routes![static_files])
-        .mount("/", routes![index, fallback])
+        .mount("/", routes![index])
 }
 #[get("/childcare/providers/county/<county>")]
 async fn get_childcare_providers_by_county(county: &str) -> Result<Json<Vec<ChildcareProvider>>, rocket::http::Status>
