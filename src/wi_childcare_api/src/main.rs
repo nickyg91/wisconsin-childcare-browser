@@ -26,7 +26,6 @@ async fn index() -> Option<NamedFile> {
 
 #[launch]
 fn rocket() -> _ {
-    println!(env!("CARGO_MANIFEST_DIR"));
     rocket::build()
         .mount("/api", routes![get_childcare_providers_by_county, get_childcare_providers_like_facility_name, get_child_vaccination_participants_by_county])
         .mount("/assets", routes![static_files])

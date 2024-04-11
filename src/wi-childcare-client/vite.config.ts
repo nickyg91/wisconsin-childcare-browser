@@ -15,7 +15,12 @@ export default defineConfig({
   plugins: [vue()],
   server: {
     proxy: {
-      '/api': 'http://localhost:8000/'
+      //'/api': 'http://localhost:8000/'
+      '/api': {
+        target: 'https://localhost:7121',
+        changeOrigin: true,
+        secure: false
+      }
     }
   },
   resolve: {

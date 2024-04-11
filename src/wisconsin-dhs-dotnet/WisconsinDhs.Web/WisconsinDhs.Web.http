@@ -1,0 +1,6 @@
+@WisconsinDhs.Web_HostAddress = http://localhost:5090
+
+GET {{WisconsinDhs.Web_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
