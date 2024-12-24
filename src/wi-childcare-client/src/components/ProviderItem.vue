@@ -8,7 +8,7 @@ const address = computed(() => {
 });
 </script>
 <template>
-  <div class="p-2 border-solid border-b border-b-white">
+  <div class="p-2 border-solid border-b border-b-white rounded-lg">
     <div>Name: {{ provider.facility_name }}</div>
     <div>Address: {{ address }}</div>
     <div>Contact Name: {{ provider.contact_name }}</div>
@@ -21,4 +21,3 @@ const address = computed(() => {
 </template>
 
 <style scoped></style>
-@/models/dhs-provider-data.interface

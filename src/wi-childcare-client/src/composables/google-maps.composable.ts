@@ -4,6 +4,7 @@ import { h, ref, render } from 'vue';
 import { useMarkerEventBus } from './marker-event-bus.composable';
 
 export const useGoogleMaps = () => {
+  let isFirstLoad = true;
   const eventEmitter = useMarkerEventBus();
   let map: google.maps.Map | null = null;
   const homeLocation = ref<google.maps.LatLng | null>(null);
@@ -14,18 +15,26 @@ export const useGoogleMaps = () => {
     mapId: string,
     selector: string,
     options: LoaderOptions,
-    position: GeolocationPosition
+    position: GeolocationPosition,
+    mapLoaded: () => void
   ) => {
     if (map != null) {
       return;
     }
     const loader = new Loader(options);
-    await loader.load();
+    await loader.importLibrary('core');
     const pos = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
     map = new google.maps.Map(document.querySelector(selector)!, {
       zoom: 12,
       center: pos,
       mapId: mapId
+    });
+    isFirstLoad = true;
+    map.addListener('tilesloaded', () => {
+      if (isFirstLoad) {
+        mapLoaded();
+        isFirstLoad = false;
+      }
     });
     homeLocation.value = new google.maps.LatLng(
       position.coords.latitude,

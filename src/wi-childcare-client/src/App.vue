@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { RouterView, useRouter } from 'vue-router';
+import { RouterView, useRouter, RouterLink } from 'vue-router';
 import DialogProvider from '@/components/DialogProvider.vue';
 import {
   NavigationMenu,
@@ -13,31 +13,33 @@ const router = useRouter();
 
 <template>
   <div class="min-h-screen">
-    <header class="p-3 bg-gray-600">
+    <header class="p-3 bg-red-600">
       <NavigationMenu>
         <NavigationMenuList>
           <NavigationMenuItem>
             <NavigationMenuLink
+              :as="RouterLink"
+              to="/childcare-providers"
               :active="router.currentRoute.value.name === 'childcare-providers'"
-              href="/childcare-providers"
               :class="
                 navigationMenuTriggerStyle({
-                  class: 'data-[active]:bg-blue-900 data-[active]:text-white mr-2'
+                  class: 'data-[]: data-[active]:bg-red-800 data-[active]:text-white mr-2'
                 })
               "
             >
               Childcare Providers
             </NavigationMenuLink>
             <NavigationMenuLink
+              :as="RouterLink"
+              to="/vaccination"
               :active="router.currentRoute.value.name === 'vaccination'"
-              href="/vaccination"
               :class="
                 navigationMenuTriggerStyle({
-                  class: 'data-[active]:bg-blue-900 data-[active]:text-white'
+                  class: 'data-[active]:bg-red-800 data-[active]:text-white mr-2'
                 })
               "
             >
-              Child Vaccination Providers
+              Childcare Vaccination Providers
             </NavigationMenuLink>
           </NavigationMenuItem>
         </NavigationMenuList>

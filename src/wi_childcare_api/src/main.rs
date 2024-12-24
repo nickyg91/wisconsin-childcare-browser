@@ -3,7 +3,7 @@ mod api;
 #[macro_use] extern crate rocket;
 
 use std::path::{Path, PathBuf};
-use rocket::fs::{NamedFile, relative};
+use rocket::fs::{NamedFile};
 use rocket::serde::json::Json;
 use crate::api::models::childcare_provider::{ChildcareProvider};
 use crate::api::models::vaccination_provider::VaccinationProvider;

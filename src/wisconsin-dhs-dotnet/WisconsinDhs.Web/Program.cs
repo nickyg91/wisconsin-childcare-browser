@@ -1,3 +1,4 @@
+using System.Text.Json;
 using WisconsinDhs.Core.Converters;
 using WisconsinDhs.Core.Services.DhsService;
 
@@ -8,12 +9,11 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-var httpClient = new HttpClient();
-builder.Services.AddSingleton(httpClient);
-builder.Services.AddScoped<IWisconsinDhsService, WisconsinDhsService>();
+builder.Services.AddHttpClient<IWisconsinDhsService, WisconsinDhsService>();
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
     options.JsonSerializerOptions.Converters.Add(new ChildcareProviderConverter());
+    options.JsonSerializerOptions.Converters.Add(new VaccinationProviderConverter());
 });
 var app = builder.Build();
 

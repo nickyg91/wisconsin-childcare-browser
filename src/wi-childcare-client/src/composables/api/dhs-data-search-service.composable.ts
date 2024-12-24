@@ -16,7 +16,7 @@ export const useDshSearchService = () => {
   const getChildcareVaccinationProvidersByCounty = async (
     county: string
   ): Promise<IDhsProviderData[]> => {
-    const response = await httpClient.get(`childcare/vaccines/county/${county}`);
+    const response = await httpClient.get(`vaccines/providers/county/${county}`);
     return response.json<IDhsProviderData[]>();
   };
 

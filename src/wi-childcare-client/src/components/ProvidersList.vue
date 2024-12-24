@@ -33,25 +33,28 @@ const isSelected = (id: number) => {
 </script>
 <template>
   <div class="p-2">
-    <div v-if="isLoading" class="flex mt-96 justify-center">
-      <LoaderCircle :size="64" class="animate-spin text-gray-800" />
-    </div>
-    <div v-if="filteredProviders.length > 0">
+    <div class="sticky top-0 bg-white z-10">
       <Input v-model="filterCriteria" placeholder="Enter Name or Address" />
-      <ProviderItem
-        :class="isSelected(provider.id) ? 'bg-gray-200' : ''"
-        class="hover:cursor-pointer hover:bg-gray-100 mt-3"
-        v-for="provider in filteredProviders"
-        :key="provider.id"
-        :provider="provider"
-        @click="onProviderSelected(provider)"
-      />
     </div>
-    <div v-if="filteredProviders.length === 0 && !isLoading" class="flex mt-96 justify-center">
-      No providers found. Please type in a county to begin
+    <div>
+      <div v-if="isLoading" class="flex mt-96 justify-center">
+        <LoaderCircle :size="64" class="text-red-600 animate-spin" />
+      </div>
+      <div v-if="filteredProviders.length > 0">
+        <ProviderItem
+          :class="isSelected(provider.id) ? 'bg-gray-200' : ''"
+          class="hover:cursor-pointer hover:bg-gray-100 mt-3"
+          v-for="provider in filteredProviders"
+          :key="provider.id"
+          :provider="provider"
+          @click="onProviderSelected(provider)"
+        />
+      </div>
+      <div v-if="filteredProviders.length === 0 && !isLoading" class="flex mt-96 justify-center">
+        No providers found. Please type in a county to begin
+      </div>
     </div>
   </div>
 </template>
 
 <style scoped></style>
-@/models/dhs-provider-data.interface

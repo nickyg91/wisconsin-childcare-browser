@@ -10,6 +10,7 @@ const dhsSearchService = useDshSearchService();
 const providers = ref<IDhsProviderData[]>([]);
 const county = ref<string>('');
 const isLoading = ref<boolean>(false);
+const canSearch = ref<boolean>(false);
 const selectedProvider = ref<IDhsProviderData | null>(null);
 watchDebounced(
   county,
@@ -33,6 +34,10 @@ watchDebounced(
 
 <template>
   <main>
+    <div>
+      <h1 class="text-2xl font-bold">Vaccination Providers</h1>
+      <hr />
+    </div>
     <div class="flex">
       <ProvidersList
         class="max-h-lvh w-1/5 overflow-y-scroll"
@@ -41,12 +46,13 @@ watchDebounced(
         @provider-selected="selectedProvider = $event"
       />
       <div class="flex flex-col w-4/5 min-h-lvh">
-        <div class="p-2">
-          <Input v-model="county" placeholder="Enter a county" />
+        <div class="py-2">
+          <Input v-model="county" :disabled="!canSearch" placeholder="Enter a county" />
         </div>
         <div>
           <ProviderMap
             class="min-h-lvh"
+            @map-interactable="canSearch = $event"
             :providers="providers"
             :focused-provider="selectedProvider"
           />

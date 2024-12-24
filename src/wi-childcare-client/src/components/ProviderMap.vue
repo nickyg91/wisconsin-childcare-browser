@@ -3,14 +3,19 @@
 import { useGoogleMaps } from '@/composables/google-maps.composable';
 import type { IDhsProviderData } from '@/models/dhs-provider-data.interface';
 import { type LoaderOptions } from '@googlemaps/js-api-loader';
-import { onMounted, watch } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import { useDialogService } from '@/composables/dialog-service.composable';
 import PlaceSummary from './PlaceSummary.vue';
 import { useMarkerEventBus } from '@/composables/marker-event-bus.composable';
+import { LoaderCircle } from 'lucide-vue-next';
 
+const isLoading = ref(true);
 const eventEmitter = useMarkerEventBus();
 const dialogService = useDialogService();
 const map = useGoogleMaps();
+const componentEmitters = defineEmits<{
+  (e: 'mapInteractable', value: boolean): void;
+}>();
 const props = defineProps<{
   providers: IDhsProviderData[];
   focusedProvider: IDhsProviderData | null;
@@ -31,6 +36,7 @@ watch(
     immediate: true
   }
 );
+
 watch(
   () => props.focusedProvider,
   async (newValue) => {
@@ -47,6 +53,11 @@ watch(
             props: {
               provider: newValue,
               place: place
+            },
+            emits: {
+              closeSummary: () => {
+                dialogService.closeDialog('providerDetails');
+              }
             }
           });
         });
@@ -64,7 +75,10 @@ onMounted(async () => {
   } as LoaderOptions;
 
   navigator.geolocation.getCurrentPosition(async (position) => {
-    await map.createMap('childcare-provider-map', '.map', loaderOptions, position);
+    await map.createMap('childcare-provider-map', '.map', loaderOptions, position, () => {
+      componentEmitters('mapInteractable', true);
+      isLoading.value = false;
+    });
   });
 
   eventEmitter.on('marker-clicked', async (name: string) => {
@@ -89,8 +103,10 @@ onMounted(async () => {
 });
 </script>
 <template>
-  <div class="map"></div>
+  <div class="min-h-screen flex items-center justify-center border rounded-lg map">
+    <LoaderCircle v-if="isLoading" :size="64" class="animate-spin text-red-600" />
+    <div class="map"></div>
+  </div>
 </template>
 
 <style scoped></style>
-@/models/dhs-provider-data.interface
