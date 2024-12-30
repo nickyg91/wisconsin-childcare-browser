@@ -1,0 +1,25 @@
+name: Docker Image CI
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+
+  build-app:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: 'Set env values'
+      run: |
+        cd ./src/wisconsin-childcare-client
+        touch .env
+        echo VITE_GMAPS_API_KEY=${{secrets.VITE_GMAPS_API_KEY}}
+        cat .env
+      
+   # - uses: actions/checkout@v4
+    #- name: Build the Docker image
+     # run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
