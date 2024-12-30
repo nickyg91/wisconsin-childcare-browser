@@ -16,6 +16,7 @@ jobs:
     - name: 'Set env values'
       run: |
         pwd
+        ls -a
         cd src/wi-childcare-client
         touch .env
         echo VITE_GMAPS_API_KEY=${{secrets.VITE_GMAPS_API_KEY}}
