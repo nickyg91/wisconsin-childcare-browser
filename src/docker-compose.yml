@@ -1,0 +1,8 @@
+version: "3.8"
+services:
+  wi-dhs-browser:
+    restart: unless-stopped
+    container_name: wi-dhs-browser
+    image: ghcr.io/nickyg91/wi-dhs-browser:1.0.0
+    ports:
+      - "8087:8080"
