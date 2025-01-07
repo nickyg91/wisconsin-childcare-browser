@@ -24,6 +24,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseStaticFiles();
 app.UseHttpsRedirection();
 app.UseRouting();
 app.MapControllers();
