@@ -1,26 +1,26 @@
-# Stage 1: Building the Vue application
-FROM node:lts as vue
-WORKDIR /client
-COPY ./wi-childcare-client .
-RUN npm install
-RUN npm run build
-
-# Stage 2: Building the Rust application
-FROM rust:1.77 as rust
-WORKDIR /server
-COPY ./wi_childcare_api .
-RUN cargo build --release
-
-# Stage 3: Final stage, copying the Rust binary and Vue dist folder
-FROM debian:12.5-slim
-ENV ROCKET_ADDRESS=0.0.0.0
-RUN apt-get update && apt install -y openssl
+﻿FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS base
 WORKDIR /app
-COPY --from=rust /server/target/release/wi_childcare_api .
-COPY --from=vue /client/dist ./dist
+EXPOSE 8080
 
-# Expose the port for the application
-EXPOSE 8000
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
+RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
+    && apt-get install -y \
+        nodejs \
+    && rm -rf /var/lib/apt/lists/*
+ARG BUILD_CONFIGURATION=Release
+WORKDIR /src
+COPY ["wi-childcare-client", "wi-childcare-client"]
+COPY ["wisconsin-dhs-dotnet", "dotnet"]
+RUN dotnet restore "dotnet/WisconsinDhs.Web/WisconsinDhs.Web.csproj"
+COPY . .
+WORKDIR "/src/dotnet/WisconsinDhs.Web"
+RUN dotnet build "WisconsinDhs.Web.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
-# Set the startup command to run your binary
-CMD ["./wi_childcare_api", "--static-dir", "./dist"]
+FROM build AS publish
+ARG BUILD_CONFIGURATION=Release
+RUN dotnet publish "WisconsinDhs.Web.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+
+FROM base AS final
+WORKDIR /app
+COPY --from=publish /app/publish .
+ENTRYPOINT ["dotnet", "WisconsinDhs.Web.dll"]

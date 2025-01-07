@@ -47,7 +47,7 @@ jobs:
           push: true
           tags: ghcr.io/${{github.repository_owner}}/${{env.IMAGE_NAME}}:1.0.0
           labels: ${{ steps.meta.outputs.labels }}
-          file: ./src/wisconsin-dhs-dotnet/WisconsinDhs.Web/Dockerfile
+          file: ./src/Dockerfile
         
   deploy-container:
       name: Deploy WI DHS Browser Container
