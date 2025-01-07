@@ -1,13 +1,13 @@
 name: Build Childcare Browser
 env:
-    REGISTRY: ghcr.io
-    IMAGE_NAME: wi-dhs-browser
+  REGISTRY: ghcr.io
+  IMAGE_NAME: wi-dhs-browser
 on:
   workflow_dispatch:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 
 jobs:
   build-app:
@@ -19,27 +19,27 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
-    
+
       - name: Log in to the container registry
         uses: docker/login-action@v3
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-        
+
       - name: Extract metadata (tags, labels) for Docker
         id: meta
         uses: docker/metadata-action@v4
         with:
-            images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-          
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+
       - name: Set env values
         run: |
           cd src/wi-childcare-client
           touch .env
           echo VITE_GMAPS_API_KEY=${{secrets.VITE_GMAPS_API_KEY}} > .env
           cat .env
-      
+
       - name: Build and Push docker image
         uses: docker/build-push-action@v5
         with:
@@ -48,15 +48,15 @@ jobs:
           tags: ghcr.io/${{github.repository_owner}}/${{env.IMAGE_NAME}}:1.0.0
           labels: ${{ steps.meta.outputs.labels }}
           file: ./src/Dockerfile
-        
+
   deploy-container:
-      name: Deploy WI DHS Browser Container
-      needs: build-app
-      runs-on: ubuntu-latest
-      permissions:
-          contents: read
-          packages: read
-      steps:
+    name: Deploy WI DHS Browser Container
+    needs: build-app
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: read
+    steps:
       - name: Execute ssh commands to pull down repo and run docker compose
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -64,14 +64,12 @@ jobs:
           username: ${{secrets.DEPLOY_USER}}
           key: ${{secrets.DEPLOY_SSH_KEY}}
           script: |
-              rm -rf wi-childcare-browser
-              gh repo clone nickyg91/wi-childcare-browser
-              docker login ghcr.io -u ${{github.actor}} --password ${{ secrets.GITHUB_TOKEN }}
-              cd wi-childcare-browser/src
-              cp docker-compose.yml
-              docker compose down
-              docker compose pull
-              docker compose up -d
-              rm -rf docker-compose.yml
-        
-        
+            rm -rf wi-childcare-browser
+            gh repo clone nickyg91/wisconsin-childcare-browser
+            docker login ghcr.io -u ${{github.actor}} --password ${{ secrets.GITHUB_TOKEN }}
+            cd wisconsin-childcare-browser/src
+            cp docker-compose.yml
+            docker compose down
+            docker compose pull
+            docker compose up -d
+            rm -rf docker-compose.yml
