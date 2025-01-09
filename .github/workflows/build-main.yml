@@ -64,7 +64,7 @@ jobs:
           username: ${{secrets.DEPLOY_USER}}
           key: ${{secrets.DEPLOY_SSH_KEY}}
           script: |
-            rm -rf wi-childcare-browser
+            rm -rf wisconsin-childcare-browser
             gh repo clone nickyg91/wisconsin-childcare-browser
             docker login ghcr.io -u ${{github.actor}} --password ${{ secrets.GITHUB_TOKEN }}
             cd wisconsin-childcare-browser/src
