@@ -24,9 +24,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
 app.UseStaticFiles();
-app.UseRouting();
+app.UseHttpsRedirection();
+app.UseHttpsRedirection();
 app.MapControllers();
 app.MapFallbackToFile("index.html");
 
